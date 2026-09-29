@@ -55,13 +55,9 @@
         location.href='dashboard.html';
       }else{
         if(!company){$('message').textContent='Nama usaha wajib diisi.';return;}
-        const {data,error}=await client.auth.signUp({email,password}); if(error) throw error;
-        if(data.user && data.session){
-          const {error:tenantError}=await client.from('tenant').insert({owner_id:data.user.id,nama:company,email,status:'aktif'}); if(tenantError) throw tenantError;
-          location.href='dashboard.html';
-        }else{
-          $('message').textContent='Akun berhasil dibuat. Silakan cek email untuk verifikasi, lalu masuk kembali.';
-        }
+        const {data,error}=await client.auth.signUp({email,password,options:{data:{company_name:company}}}); if(error) throw error;
+        if(data.session){location.href='dashboard.html';}
+        else{$('message').textContent='Akun berhasil dibuat. Silakan cek email untuk verifikasi, lalu masuk kembali.';}
       }
     }catch(err){ $('message').textContent=err.message || 'Terjadi kesalahan. Coba lagi.'; }
   });
